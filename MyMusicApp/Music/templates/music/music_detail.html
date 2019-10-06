@@ -1,0 +1,62 @@
+{% extends "music/base.html" %}
+{% load static %}
+{% block content %}
+
+        <!-- ##### Header Area End ##### -->
+
+    <!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb-area bg-img bg-overlay" style="background-image: url({% static 'music/img/bg-img/breadcumb2.jpg' %});">
+        <div class="bradcumbContent">
+            <p></p>
+            <h2>Music Player</h2>
+        </div>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+<br>
+    <div>
+
+     <section class="featured-artist-area section-padding-100 bg-img bg-overlay bg-fixed" style="background-image: url({% static 'music/img/bg-img/bg-4.jpg' %});">
+        <div class="container">
+            <div class="row align-items-end">
+                <div class="col-12 col-md-5 col-lg-4">
+                    <div class="featured-artist-thumb">
+
+                        <img src="{{ object.image_art.url }}" alt="">
+                    </div>
+                </div>
+                <div class="col-12 col-md-7 col-lg-8">
+                    <div class="featured-artist-content">
+                        <!-- Section Heading -->
+                        <div class="section-heading white text-left mb-30">
+
+                            <h2>{{ object.title }}</h2>
+                            <p>{{ object.year }}</p>
+
+                        </div>
+                        <p>{{ object.artist }}</p>
+                        <div class="song-play-area">
+                            <div class="song-name">
+                                <p> From the album {% if object.album %}<a href="{% url 'album-detail' object.album.slug %}">{{ object.album }}</a>{% else %} Unknown {% endif %}</p>
+                            </div>
+                        {% if object.media %}
+                            <audio preload="auto" controls>
+
+                                <source src="{{ object.media.url }}">
+
+                            </audio>
+                        {% else %} <h3>No Audio File Found!!</h3>
+                        {% endif %}
+
+                        </div>
+                    <h2><a href="{{ MEDIA_URL }}{{ object.media.url }}" target="_blank" style="color: #8aa2ae">Download</a></h2>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+<br>
+
+
+{% endblock content %}

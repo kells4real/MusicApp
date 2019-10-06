@@ -1,0 +1,352 @@
+// Variables
+// =========
+
+// Colors
+// ------
+$color__white: #fff;
+$color__black: #3f3d34;
+$color__gray: #7f7c6b;
+$color__gray--dark: #4a473c;
+$color__gray--light: #f2f2f2;
+$color__yellow: #f9b94e;
+$color__orange: #f9774e;
+$color__beige: #ddd8c8;
+
+// Font sizes
+// -------
+$font-size: 14;
+$font-size--alpha: 1.95;
+$font-size--beta: 1.5;
+
+@mixin font-size($size){
+    font-size: #{$size * $font-size}px;
+    font-size: #{$size}rem;
+    line-height: 1em;
+    margin: 0 0 #{$size * $font-size / 2}px;
+    margin: 0 0 #{$size / 2}rem;
+}
+
+// Widths
+// ------
+$width--main: 75em;
+$width--player: 33em;
+$width--playlist: $width--main - $width--player;
+
+// Spacing
+// -------
+$spacing: 2rem;
+$spacing--large: 3rem;
+$spacing--small: 1rem;
+
+
+// Base
+// ====
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+html {
+    background-color: $color__orange;
+    background-image: linear-gradient(
+        135deg,
+        $color__yellow 0%,
+        $color__orange 100%
+    );
+    font-size: #{$font-size}px;
+    font-family: Nunito, arial, sans-serif;
+    font-weight: 400;
+    min-height: 100%;
+}
+
+.app {
+    color: $color__black;
+    box-shadow: 0 0 $spacing--small rgba($color__black, .6);
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    max-width: $width--main;
+    padding: 0;
+    width: 100%;
+    
+    @media (min-width: $width--playlist) {
+        margin: $spacing--small auto;
+    }
+    
+    @media (min-width: $width--main) {
+        margin: $spacing auto;
+    }
+}
+
+// Generic
+// -------
+a {
+    color: $color__orange;
+    text-decoration: none;
+    transition: color .4s;
+    
+    &:hover,
+    &:focus {
+        color: lighten($color__orange, 10%);
+    }
+}
+
+img {
+    height: auto;
+    max-width: 100%;
+}
+
+// Components
+// ==========
+
+// Slider
+// ------
+
+$slider-height: 8px;
+$slider__thumb-height: 20px;
+$slider__thumb-width: 6px;
+
+.slider {
+    line-height: 1em;
+    overflow: hidden;
+    padding: ($slider__thumb-height - $slider-height) / 2 0;
+    
+    [type=range] {
+        appearance: none;
+        background: $color__gray--light;
+        height: $slider-height;
+        position: relative;
+        width: 100%;
+        
+        &:focus {
+            outline: none;
+        }
+
+        &::-webkit-slider-thumb {
+            appearance: none;
+            background-color: $color__black;
+            border-radius: 99px;
+            cursor: pointer;
+            height: $slider__thumb-height;
+            position: relative;
+            transition: transform .2s;
+            width: $slider__thumb-width;
+            
+            &:focus,
+            &:active {
+                transform: scale(1.3);
+            }
+
+            &:after {
+                background: $color__orange;
+                bottom: 0;
+                content: '';
+                display: block;
+                height: $slider-height;
+                margin-top: 0 - ($slider-height / 2);
+                pointer-events: none;
+                position: absolute;
+                right: $slider__thumb-width;
+                top: 50%;
+                width: 999px;
+            }
+        }
+    }
+          
+    &--volume {        
+        [type=range] {
+            &::-webkit-slider-thumb {
+                background-color: $color__white;
+                border: 3px solid $color__orange;
+                width: $slider__thumb-height;
+                
+                &:after {
+                    right: $slider__thumb-height - 6;
+                }
+            }
+        }
+    }
+}
+
+// Icon
+// ----
+.icon {
+    fill: currentcolor;
+    height: 100%;
+    width: 100%;
+    
+    &--inline {
+        display: inline-block;
+        height: 1em;
+        width: 1em;
+    }
+}
+
+// Control
+// -------
+.control {
+    cursor: pointer;
+    margin: 0;
+    padding: $spacing--small;
+    transition: opacity .4s, color .4s;
+    
+    &:hover,
+    &:focus {
+        opacity: .8;
+    }
+    
+    &:active {
+        color: $color__orange;
+        transition: none;
+    }
+    
+    &--small {
+        transform: scale(.4);
+    }
+    
+    &--dimmed {
+        opacity: .6;
+    }
+    
+    &--outlined {
+        border: 2px solid $color__gray--light;
+        border-radius: 100%;
+    }
+    
+    &--active {
+        color: $color__orange;
+    }
+}
+
+
+// UI
+// ====
+
+// Player
+// ------
+.player {
+    background: $color__white;
+    text-align: center;
+    width: 100%;
+    
+    @media (min-width: $width--player) {
+        width: percentage($width--player / $width--main);
+    }
+    
+    &__title {
+        @include font-size($font-size--alpha);
+    }
+    
+    &__sub-title {
+        @include font-size($font-size--beta);
+        
+        color: $color__gray;
+        font-weight: 400;
+    }
+    
+    &__cover {
+        display: block;
+        width: 100%;
+    }
+    
+    &__timer {
+        background: $color__beige;
+        display: flex;
+        justify-content: space-between;
+        padding: $spacing--small;
+    }
+    
+    &__progress-bar {
+        margin-top: 0 - $spacing--small;
+    }
+    
+    &__controls {
+        display: flex;
+        list-style: none;
+        padding: $spacing--small $spacing;
+    }
+    
+    &__volume {
+        display: flex;
+        padding: $spacing;
+        
+        &__icon {
+            width: $spacing;
+            height: $spacing;
+            margin-right: $spacing--small;
+        }
+        
+        &__slider {
+            width: 100%;
+        }
+    }
+}
+
+
+// Playlist
+// --------
+.playlist {
+    background: $color__gray--dark;
+    color: $color__gray--light;
+    width: 100%; 
+    
+    @media (min-width: $width--player) {
+        width: percentage($width--playlist / $width--main);
+    }
+    
+    &__header {
+        background: $color__black;
+        padding: $spacing--large;
+    }
+    
+    &__title {
+        @include font-size($font-size--alpha);
+        
+        margin-top: 0;
+    }
+    
+    &__info {
+        
+    }
+    
+    &__list {
+        list-style: none;
+        margin: 0;
+        padding: 0 $spacing--large;
+    }
+    
+    &__track {
+        border-bottom: 1px solid $color__black;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        margin: 0;
+        padding: $spacing 0;
+        
+        &--active {
+            color: $color__orange;
+        }
+        
+        &__cover {
+            height: $spacing--large;
+            width: $spacing--large;
+        }
+        
+        &__info {
+            margin: 0 $spacing;
+            width: 100%;
+        }
+        
+        &__title {
+            @include font-size($font-size--beta);
+        }
+    }
+}
+
+
+// Overrides
+// =========
+.hide.hide {
+    display: none;
+}

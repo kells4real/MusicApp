@@ -1,0 +1,79 @@
+{% extends 'music/base.html' %}
+{% load static %}
+{% block content %}
+
+
+ <!-- ##### Breadcumb Area Start ##### -->
+    <section class="breadcumb-area bg-img bg-overlay" style="background-image: url({% static 'music/img/bg-img/breadcumb3.jpg' %});">
+        <div class="bradcumbContent">
+
+            <h2>{{ artist.artist_name }}</h2>
+        </div>
+    </section>
+    <!-- ##### Breadcumb Area End ##### -->
+    <!-- ##### Add Area Start ##### -->
+
+{#    <div class="add-area mb-100">#}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col-12">#}
+{#                    <div class="adds">#}
+{#                        <a href="#"><img src="{{ artist.artist_image.url }}" alt=""></a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+
+
+     <!-- ##### Buy Now Area Start ##### -->
+    <section class="oneMusic-buy-now-area has-fluid bg-gray section-padding-100">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading style-2">
+                        <p>See what’s new</p>
+
+                       {% if count > 1 %} <h2>Albums</h2>{% elif count < 1 %} <h2>Artist Has No Album Yet</h2> {% else %} <h2>Album</h2>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <!-- Single Album Area -->
+
+
+                <!-- Single Album Area -->{% for album in artist.album_set.all %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="single-album-area wow fadeInUp" data-wow-delay="200ms">
+                        <div class="album-thumb">
+                            <img src="{{ album.album_image.url }}" alt="">
+                        </div>
+                        <div class="album-info">
+                           <a href="{% url 'album-detail' album.slug %}">
+                                <h5>{{ album.title }}</h5>
+                            </a>
+                            <p>{{ album.year }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Single Album Area -->{% endfor %}
+
+
+            </div>
+{##}
+{#            <div class="row">#}
+{#                <div class="col-12">#}
+{#                    <div class="load-more-btn text-center wow fadeInUp" data-wow-delay="300ms">#}
+{#                        <a href="#" class="btn oneMusic-btn">Load More <i class="fa fa-angle-double-right"></i></a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+        </div>
+    </section>
+    <!-- ##### Buy Now Area End ##### -->
+
+
+{% endblock content %}

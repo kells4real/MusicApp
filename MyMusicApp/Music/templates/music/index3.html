@@ -1,0 +1,7 @@
+
+{% for music in songs %}
+
+    <h3> Title: <a href="{% url 'music-detail' music.slug %}"> {{ music.title }} </a> </h3>
+
+{% endfor %}
+<h1></h1>

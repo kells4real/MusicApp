@@ -1,0 +1,76 @@
+{% extends 'music/base.html' %}
+{% load static %}
+{% block content %}
+
+
+ <!-- ##### Breadcumb Area Start ##### -->
+    <section class="breadcumb-area bg-img bg-overlay" style="background-image: url({% static 'music/img/bg-img/breadcumb3.jpg' %});">
+        <div class="bradcumbContent">
+            <p>{{ album.artist }}</p>
+            <h2>{{ album.title }}</h2>
+        </div>
+    </section>
+    <!-- ##### Breadcumb Area End ##### -->
+    <!-- ##### Add Area Start ##### -->
+    <br>
+    <div class="add-area mb-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="adds">
+                        <a href="#"><img src="{{ album.album_image.url }}" alt=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Add Area End ##### -->
+     <!-- ##### Song Area Start ##### -->
+    <div class="one-music-songs-area mb-70">
+        <div class="container">
+            <div class="row">
+
+                <!-- Single Song Area -->{% for musics in album.music_set.all %}
+                <div class="col-12">
+                    <div class="single-song-area mb-30 d-flex flex-wrap align-items-end">
+                        <div class="song-thumbnail">
+                            <img src="{{ musics.image_art.url }}" alt="">
+                        </div>
+                        <div class="song-play-area">
+                            <div class="song-name">
+                                <p>{{ musics.title }}</p>
+                            </div>
+                            <audio preload="auto" controls>
+                                <source src="{{ musics.media.url }}">
+                            </audio>
+                        </div>
+                    </div>
+                </div>
+                                    {% endfor %}
+                <!-- Single Song Area -->
+
+
+            </div>
+        </div>
+    </div>
+    <!-- ##### Song Area End ##### -->
+
+
+
+{#<div>#}
+{#    <img src="{{ album.album_image.url }}" alt="">#}
+{#</div>#}
+{#<h3>Title: {{ album.title }}</h3>#}
+{#<h3>Artist: {{ album.artist }}</h3>#}
+{#<h3>Album: {{ album.album }}</h3>#}
+{#<h3>Genre: {{ album.genre }}</h3>#}
+{#<h3>Year: {{ album.year }}</h3>#}
+{##}
+{#{% for musics in album.music_set.all %}#}
+{#<div>#}
+{#    <img src="{{ musics.image_art.url }}" alt="">#}
+{#    <h3>{{ musics.title }}</h3>#}
+{#</div>#}
+{#{% endfor %}#}
+
+{% endblock content %}

@@ -1,0 +1,352 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% block content %}
+{% load widget_tweaks %}
+{#  <article class="media content-section">#}
+{#    <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">#}
+{#    <div class="media-body">#}
+{#      <div class="article-metadata">#}
+{#        <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>#}
+{#        <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>#}
+{#        {% if object.author == user %}#}
+{#          <div>#}
+{#            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.slug %}">Update</a>#}
+{#            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.slug %}">Delete</a>#}
+{#          </div>#}
+{#        {% endif %}#}
+{#      </div>#}
+{#      <h2 class="article-title">{{ object.title }}</h2>#}
+{#      <p class="article-content">{{ object.content }}</p>#}
+{#    </div>#}
+{#  </article>#}
+
+
+<!-- Page Header -->
+			<div id="post-header" class="page-header">
+				<div class="background-img" style="background-image: url({{ objects.image.url }});"></div>
+				<div class="container">
+					<div class="row">
+						<div class="col-md-10">
+							<div class="post-meta">
+								<a class="post-category cat-2" href="">{{ objects.category }}</a>
+								<span class="post-date">{{ objects.date_posted }}</span>
+							</div>
+							<h1>{{ objects.title }}</h1>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+		</header>
+		<!-- /Header -->
+
+		<!-- section -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<!-- Post content -->
+					<div class="col-md-8">
+						<div class="section-row sticky-container">
+							<div class="main-post">
+								<h3>{{ objects.title }}</h3>
+                                <p>{{ objects.date_posted }}</p>
+                                {% if objects.image_2 %}
+                                <img class="img-responsive" src="{{ objects.image_2.url }}" alt="">
+                                {% endif %}
+								<p>{{ objects.content }}</p>
+                            <br>
+                            <!-- AddToAny BEGIN -->
+
+                                <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+                                    <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+                                    <a class="a2a_button_facebook"></a>
+                                    <a class="a2a_button_twitter"></a>
+                                    <a class="a2a_button_email"></a>
+                                    <a class="a2a_button_linkedin"></a>
+                                    <a class="a2a_button_whatsapp"></a>
+                                    </div>
+
+                                <script async src="https://static.addtoany.com/menu/page.js"></script>
+                                <!-- AddToAny END -->
+
+							</div>
+							<div class="post-shares sticky-shares">
+								<a href="#" class="share-facebook"><i class="fa fa-facebook"></i></a>
+								<a href="#" class="share-twitter"><i class="fa fa-twitter"></i></a>
+								<a href="#" class="share-google-plus"><i class="fa fa-google-plus"></i></a>
+								<a href="#" class="share-pinterest"><i class="fa fa-pinterest"></i></a>
+								<a href="#" class="share-linkedin"><i class="fa fa-linkedin"></i></a>
+								<a href="#"><i class="fa fa-envelope"></i></a>
+							</div>
+						</div>
+
+						<!-- ad -->
+						<div class="section-row text-center">
+							<a href="#" style="display: inline-block;margin: auto;">
+								<img class="img-responsive" src="{% static 'blog/./img/ad-2.jpg' %}" alt="">
+							</a>
+						</div>
+						<!-- ad -->
+
+						<!-- author -->
+						<div class="section-row">
+							<div class="post-author">
+								<div class="media">
+									<div class="media-left">
+										<img class="media-object" src="{{ objects.author.userimage.myimage.url }}" alt="">
+									</div>
+									<div class="media-body">
+										<div class="media-heading">
+											<h3>{% if objects.author.first_name  %}{{ objects.author.first_name }}{% endif %} {% if objects.author.last_name %}{{ objects.author.last_name }}{% endif %}</h3>
+										</div>
+										<p>{{ objects.author.profile.bio }}</p>
+										<ul class="author-social">
+                                        {% if objects.author.profile.facebook %}<li><a href="{{ objects.author.profile.facebook }}" target="_blank"><i class="fa fa-facebook"></i></a></li> {% endif %}
+										{% if objects.author.profile.twitter %}	<li><a href="{{ objects.author.profile.twitter }}" target="_blank"><i class="fa fa-twitter"></i></a></li> {% endif %}
+										{% if objects.author.profile.instagram %}<li><a href="{{ objects.author.profile.instagram }}" target="_blank"><i class="fa fa-instagram"></i></a></li> {% endif %}
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /author -->
+
+
+						<!-- comments -->
+						<div class="section-row">
+							<div class="section-title">
+								{% if count > 1 %}<h2> {{ count }} Comments</h2> {% elif count == 1 %} <h2> {{ count }} Comment</h2> {% else %} <h2> Post has no comment yet </h2> {% endif %}
+							</div>
+
+							<div class="post-comments">
+								<!-- comment -->{% for comment in com %}
+                                {% if comment.approved == True %}
+								<div class="media">
+									<div class="media-left">
+										<img class="media-object" src="{{ comment.usrimg.myimage.url }}" alt="">
+									</div>
+									<div class="media-body">
+										<div class="media-heading">
+											<h4>{{ comment.user }}</h4>
+											<span class="time">{{ comment.date_posted }}</span>
+											<a href="#" class="reply">{{ count2 }} Replies</a>
+										</div>
+                                        <p>{{ comment.message }}</p>
+                                    {% if comment.user == request.user %}<a href="{% url 'commentdelete' comment.pk %}" class="small"><span class="badge badge-primary">Delete Comment</span></a>
+                                    <a href="{% url 'comment-edit' comment.pk %}" class="small"><span class="badge badge-primary">Edit Comment</span></a>{% endif %}
+{#                                     <div class="replybutton" style="">#}
+{#            <span class="text-right small"> Reply</span>#}
+{#        </div>#}
+{##}
+{#    <div class="row replybox" style="display: none">#}
+{#        <div class="col-sm-12 ml-5 pl-5">#}
+           {% if user.is_authenticated %}
+            <form method='POST'>
+                {% csrf_token %}
+                <input type="hidden" name='whichcomment' id='id_whichcomment' value="{{comment.id}}">
+                <input class="" type="text" name='message' maxlength="250" id="id_message" placeholder="Reply. . . ">
+                <button style="padding:1%;" class="btn" type="submit">submit</button>
+            </form>{% endif %}
+{#        </div>#}
+{#    </div>#}
+
+										<!-- comment -->{% for r in replycom %}
+                                        {% if r.approved == True %}
+                                        {% if r.whichcomment.message == comment.message %}
+										<div class="media">
+											<div class="media-left">
+												<img class="media-object" src="{{ r.usrimg.myimage.url }}" alt="">
+											</div>
+											<div class="media-body">
+												<div class="media-heading">
+													<h4>{{ r.user }}</h4>
+													<span class="time">{{ r.date_posted }}</span>
+{#													<a href="#" class="reply">Reply</a>#}
+												</div>
+												<p>{{ r.message }}</p>
+                                                {% if r.user == request.user %}<a href="{% url 'commentreplydelete' r.pk %}" class="small"><span class="badge badge-primary">delete</span></a>{% endif %}
+
+											</div>
+										</div>{% endif %}{% endif %}{% endfor %}
+										<!-- /comment -->
+									</div>
+								</div>{% endif %}{% endfor %}
+								<!-- /comment -->
+
+							</div>
+						</div>
+						<!-- /comments -->
+						<!-- reply -->{% if user.is_authenticated %}
+						<div class="section-row">
+							<div class="section-title">
+								<h2>Leave a comment</h2>
+
+							</div>
+
+					<form method="POST">
+{% csrf_token %}
+{% for field in form1.visible_fields %}
+
+    <div class="form-group">
+      {{ field.label_tag }}
+      {% render_field field class="form-control" %}
+    </div>
+{% endfor %}
+
+<button type="submit" class="btn btn-warning">Add Comment</button>
+
+</form>
+
+						</div>
+                        {% else %}
+                        	<div class="section-title">
+                             <h2><a href="{% url 'login' %}">Login</a> to leave a comment</h2>
+							</div>
+
+						<!-- /reply -->{% endif %}
+					</div>
+					<!-- /Post content -->
+
+					<!-- aside -->
+					<div class="col-md-4">
+						<!-- ad -->
+						<div class="aside-widget text-center">
+							<a href="#" style="display: inline-block;margin: auto;">
+								<img class="img-responsive" src="./img/ad-1.jpg" alt="">
+							</a>
+						</div>
+						<!-- /ad -->
+
+						<!-- post widget -->
+						<div class="aside-widget">
+							<div class="section-title">
+								<h2>Most Read</h2>
+							</div>
+
+							<div class="post post-widget">
+								<a class="post-img" href="blog-post.html"><img src="./img/widget-1.jpg" alt=""></a>
+								<div class="post-body">
+									<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
+								</div>
+							</div>
+
+							<div class="post post-widget">
+								<a class="post-img" href="blog-post.html"><img src="./img/widget-2.jpg" alt=""></a>
+								<div class="post-body">
+									<h3 class="post-title"><a href="blog-post.html">Pagedraw UI Builder Turns Your Website Design Mockup Into Code Automatically</a></h3>
+								</div>
+							</div>
+
+							<div class="post post-widget">
+								<a class="post-img" href="blog-post.html"><img src="./img/widget-3.jpg" alt=""></a>
+								<div class="post-body">
+									<h3 class="post-title"><a href="blog-post.html">Why Node.js Is The Coolest Kid On The Backend Development Block!</a></h3>
+								</div>
+							</div>
+
+							<div class="post post-widget">
+								<a class="post-img" href="blog-post.html"><img src="./img/widget-4.jpg" alt=""></a>
+								<div class="post-body">
+									<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
+								</div>
+							</div>
+						</div>
+						<!-- /post widget -->
+
+						<!-- post widget -->
+						<div class="aside-widget">
+							<div class="section-title">
+								<h2>Featured Posts</h2>
+							</div>
+							<div class="post post-thumb">
+								<a class="post-img" href="blog-post.html"><img src="./img/post-2.jpg" alt=""></a>
+								<div class="post-body">
+									<div class="post-meta">
+										<a class="post-category cat-3" href="#">Jquery</a>
+										<span class="post-date">March 27, 2018</span>
+									</div>
+									<h3 class="post-title"><a href="blog-post.html">Ask HN: Does Anybody Still Use JQuery?</a></h3>
+								</div>
+							</div>
+
+							<div class="post post-thumb">
+								<a class="post-img" href="blog-post.html"><img src="./img/post-1.jpg" alt=""></a>
+								<div class="post-body">
+									<div class="post-meta">
+										<a class="post-category cat-2" href="#">JavaScript</a>
+										<span class="post-date">March 27, 2018</span>
+									</div>
+									<h3 class="post-title"><a href="blog-post.html">Chrome Extension Protects Against JavaScript-Based CPU Side-Channel Attacks</a></h3>
+								</div>
+							</div>
+						</div>
+						<!-- /post widget -->
+
+						<!-- catagories -->
+						<div class="aside-widget">
+							<div class="section-title">
+								<h2>Catagories</h2>
+							</div>
+							<div class="category-widget">
+								<ul>
+									<li><a href="#" class="cat-1">Web Design<span>340</span></a></li>
+									<li><a href="#" class="cat-2">JavaScript<span>74</span></a></li>
+									<li><a href="#" class="cat-4">JQuery<span>41</span></a></li>
+									<li><a href="#" class="cat-3">CSS<span>35</span></a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- /catagories -->
+
+						<!-- tags -->
+						<div class="aside-widget">
+							<div class="tags-widget">
+								<ul>
+									<li><a href="#">Chrome</a></li>
+									<li><a href="#">CSS</a></li>
+									<li><a href="#">Tutorial</a></li>
+									<li><a href="#">Backend</a></li>
+									<li><a href="#">JQuery</a></li>
+									<li><a href="#">Design</a></li>
+									<li><a href="#">Development</a></li>
+									<li><a href="#">JavaScript</a></li>
+									<li><a href="#">Website</a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- /tags -->
+
+						<!-- archive -->
+						<div class="aside-widget">
+							<div class="section-title">
+								<h2>Archive</h2>
+							</div>
+							<div class="archive-widget">
+								<ul>
+									<li><a href="#">January 2018</a></li>
+									<li><a href="#">Febuary 2018</a></li>
+									<li><a href="#">March 2018</a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- /archive -->
+					</div>
+					<!-- /aside -->
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /section -->
+
+    <script>
+
+        $('.replybutton').click( function(){
+            $(this).next('.replybox').toggle();
+            console.log('triggered');
+
+        });
+    </script>
+{% endblock content %}

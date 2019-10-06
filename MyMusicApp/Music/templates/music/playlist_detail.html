@@ -1,0 +1,52 @@
+{% extends 'music/base.html' %}
+{% load static %}
+{% block content %}
+
+
+ <!-- ##### Breadcumb Area Start ##### -->
+    <section class="breadcumb-area bg-img bg-overlay" style="background-image: url({% static 'music/img/bg-img/breadcumb3.jpg' %});">
+        <div class="bradcumbContent">
+
+            <h2>{{ play.title }}</h2>
+        </div>
+    </section>
+    <!-- ##### Breadcumb Area End ##### -->
+    <!-- ##### Add Area Start ##### -->
+            <br>
+            <br>
+
+    <!-- ##### Add Area End ##### -->
+     <!-- ##### Song Area Start ##### -->
+    <div class="one-music-songs-area mb-70">
+        <div class="container">
+            <div class="row">
+
+                <!-- Single Song Area -->{% for music in play.music_set.all %}
+                <div class="col-12">
+                    <div class="single-song-area mb-30 d-flex flex-wrap align-items-end">
+                        <div class="song-thumbnail">
+                            <img src="{{ music.image_art.url }}" alt="">
+                        </div>
+                        <div class="song-play-area">
+                            <div class="song-name">
+                                <p>{{ music.title }}</p>
+                            </div>
+                            <audio preload="auto" controls>
+                                <source src="{{ music.media.url }}">
+                            </audio>
+                        </div>
+                    </div>
+                </div>
+                                    {% endfor %}
+                <!-- Single Song Area -->
+
+
+            </div>
+        </div>
+    </div>
+    <!-- ##### Song Area End ##### -->
+
+
+
+
+{% endblock content %}
