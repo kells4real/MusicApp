@@ -47,9 +47,15 @@
 
 						<!-- nav -->
 						<ul class="nav-menu nav navbar-nav">
-							<li><a href="category.html">News</a></li>
+                        {% if user.is_athenticated %}
+                            <li><a href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+							<li><a href="{% url 'login' %}">Login</a></li>
+                        {% endif %}
 							<li><a href="{% url 'home' %}">Music</a></li>
-							<li class="cat-1"><a href="category.html">Web Design</a></li>
+                            {% if user.is_authenticated %}
+							<li class="cat-1"><a href="{% url 'post-create' %}">Create Post</a></li>
+                            {% endif %}
 							<li class="cat-2"><a href="category.html">JavaScript</a></li>
 							<li class="cat-3"><a href="category.html">Css</a></li>
 							<li class="cat-4"><a href="category.html">Jquery</a></li>

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, reverse, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .forms import CommentForm, CommentReplyForm
+from .forms import CommentForm, CommentReplyForm, PostForm
 from django.views.generic import (
     ListView,
     DetailView,
@@ -13,6 +13,7 @@ from django.views.generic import (
 from .models import Post, CommentReply, Comment, UserImage, Hashtag
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+
 
 
 def home(request):
@@ -139,17 +140,36 @@ def post_detail(request, slug):
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
-    model = Post
-    fields = ['title', 'image', 'content']
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+    def get(self, request, *args, **kwargs):
+        context = {'form': PostForm()}
+        return render(request, 'blog/post_create.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.instance.author = self.request.user
+            post = form.save()
+            post.save()
+            return HttpResponseRedirect(reverse_lazy('post-detail', args=[post.slug]))
+        return render(request, 'blog/post_create.html', {'form': form})
+
+    # model = Post
+    # fields = ['title', 'image', 'date_posted', 'content', 'image_2', 'category']
+    # template_name = "blog/post_create.html"
+    # #
+    # # def form_valid(self, form):
+    # #     form.instance.author = self.request.user
+    # #     return super().form_valid(form)
+    # #
+    # # def get_success_url(self):
+    # #     return reverse_lazy('post-detail', kwargs={'slug': self.object.slug})
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'image', 'content']
+    fields = ['title', 'image', 'date_posted', 'content', 'image_2', 'category']
+    template_name = "blog/post_update.html"
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -160,6 +180,10 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if self.request.user == post.author:
             return True
         return False
+
+    # def get_context_data(self, **kwargs):
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'slug': self.object.slug})
 
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -180,13 +204,17 @@ def about(request):
 class CommentReplyDelete(DeleteView):
     model = CommentReply
     template_name = 'blog/blogdelete.html'
-    success_url = reverse_lazy('post-detail')
+
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'slug': self.object.whichcomment.blog.slug})
 
 
 class CommentDelete(DeleteView):
     model = Comment
     template_name = 'blog/blogdelete.html'
-    success_url = reverse_lazy('post-detail')
+
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'slug': self.object.blog.slug})
 
 
 def comment_update(request, slug):
@@ -217,7 +245,27 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return False
 
     def get_success_url(self):
-        return reverse_lazy('blog-home')
+        return reverse_lazy('post-detail', kwargs={'slug': self.object.blog.slug})
+
+
+class CommentReplyUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = CommentReply
+    fields = ['message']
+    template_name = 'blog/comment_update.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.user:
+            return True
+        return False
+
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'slug': self.object.whichcomment.blog.slug})
+
 
 def category_list(request, slug):
     post = Hashtag.objects.get(slug=slug)
