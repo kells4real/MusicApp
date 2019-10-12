@@ -81,7 +81,7 @@ class Comment(models.Model):
     message = models.TextField(max_length=500)
     usrimg = models.ForeignKey(UserImage, on_delete=models.CASCADE, null=True, blank=True)
     date_posted = models.DateTimeField(default=timezone.now)
-    approved = models.BooleanField(default=False)
+    approved = models.BooleanField(default=True)
 
     def __str__(self):
         return self.message
@@ -95,7 +95,7 @@ class CommentReply(models.Model):
     blog = models.ForeignKey(Post, on_delete=models.CASCADE)
     usrimg = models.ForeignKey(UserImage, on_delete=models.CASCADE, null=True, blank=True)
     date_posted = models.DateTimeField(default=timezone.now)
-    approved = models.BooleanField(default=False)
+    approved = models.BooleanField(default=True)
 
     def __str__(self):
         return self.message

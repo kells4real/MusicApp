@@ -129,13 +129,19 @@
     <main role="main" class="container">
       <div class="row">
         <div class="col-md-8">
-          {% if messages %}
             {% for message in messages %}
-              <div class="alert alert-{{ message.tags }}">
+
+          {% if url == "post-detail" %}
+              <div class="alert alert-{{ message.tags }}" style="color:Red;">
                 {{ message }}
               </div>
+          {% else %}
+              <div class="alert alert-{{ message.tags }}" style="color:Green;">
+                {{ message }}
+              </div>
+                {% endif %}
             {% endfor %}
-          {% endif %}
+
          </div>
       </div>
     </main>

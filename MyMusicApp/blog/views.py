@@ -66,16 +66,32 @@ def post_detail(request, slug):
     replycom2 = CommentReply.objects.filter(blog=objects)
     form1 = CommentForm
     form2 = CommentReplyForm
+    search_list = ["suck", "fuck", "Shit", "pussy", "fucked", "fucking",
+                   "Mother Fucker", "mother fucker", "fuck you",
+                   "FUCK YOU", "fucked", "shit", "asshole", "ass hole", "nigga",
+                   "niggro"]
+
+    for mess in com_count:
+        if any(c in mess.message.casefold() for c in search_list):
+            mess.delete()
+            messages.success(request, f'Your comment was deleted because it contained fowl words or language..')
+
+    for mess in reply_count:
+        if any(c in mess.message.casefold() for c in search_list):
+            mess.delete()
+            messages.success(request, f'Your comment was deleted because it contained fowl words or language..')
+
 
     count = 0
+    count2 = 0
     for num in com_count:
-        if num.approved == True:
+        if num.approved:
             count = count + 1
 
-    count2 = 0
-    for num in reply_count:
 
-        count2 = count2 + 1
+    for num in reply_count:
+        if num.approved:
+            count2 = count2 + 1
 
     context = {
         'objects': objects,
@@ -86,7 +102,8 @@ def post_detail(request, slug):
         'form1': form1,
         'form2': form2,
         'count': count,
-        'count2': count2
+        'count2': count2,
+        'url': "post-detail"
     }
     if request.method == 'POST':
 
