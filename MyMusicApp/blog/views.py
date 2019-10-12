@@ -217,17 +217,6 @@ class CommentDelete(DeleteView):
         return reverse_lazy('post-detail', kwargs={'slug': self.object.blog.slug})
 
 
-def comment_update(request, slug):
-    if request.method == 'POST':
-        c_form = CommentForm(request.POST, instance=request.user.comment)
-
-        if c_form.is_valid():
-            c_form.save()
-            messages.success(request, f'Your comment has been updated!')
-            return HttpResponseRedirect(reverse('post-detail', args=(), kwargs={'slug': slug}))
-        else:
-            messages.error(request, f'Please correct the error(s) below.!')
-
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
