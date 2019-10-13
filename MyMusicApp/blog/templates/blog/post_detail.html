@@ -113,11 +113,39 @@
 						</div>
 						<!-- /author -->
 
+                    {% if user.is_authenticated %}
+						<div class="section-row">
+							<div class="section-title">
+								<h2>Leave a comment {{ user.username }}..</h2>
+
+							</div>
+
+					<form method="POST">
+{% csrf_token %}
+{% for field in form1.visible_fields %}
+
+    <div class="form-group">
+      {{ field.label_tag }}
+      {% render_field field class="form-control" %}
+    </div>
+{% endfor %}
+
+<button type="submit" class="btn btn-warning">Add Comment</button>
+
+</form>
+
+						</div>
+                        {% else %}
+                        	<div class="section-title">
+                             <h2><a href="{% url 'login' %}">Login</a> to leave a comment</h2>
+							</div>
+
+						<!-- /reply -->{% endif %}
 
 						<!-- comments -->
 						<div class="section-row">
 							<div class="section-title">
-								{% if count > 1 %}<h2> {{ count }} Comments</h2> {% elif count == 1 %} <h2> {{ count }} Comment</h2> {% else %} <h2> Post has no comment yet </h2> {% endif %}
+								{% if count > 1 %}<h2> {{ count }} Comments</h2> {% elif count == 1 %} <h2> {{ count }} Comment</h2> {% else %} <h2> Be the first to comment.. </h2> {% endif %}
 							</div>
 
 							<div class="post-comments">
@@ -130,27 +158,44 @@
 									<div class="media-body">
 										<div class="media-heading">
 											<h4>{{ comment.user }}</h4>
-											<span class="time">{{ comment.date_posted }}</span>
-											<a href="#" class="reply">{{ count2 }} Replies</a>
+                                            <span class="time">{{ comment.date_posted }}</span>
+                                              <span style="font-style: italic">{% if comment.commentreply_set.count > 1 %}  {{ comment.commentreply_set.count }} Replies.. {% elif comment.commentreply_set.count == 1 %} {{ comment.commentreply_set.count }} Reply.. {% elif comment.commentreply_set.count < 1 %} {% endif %}</span>
+{#											        <div class="replybutton" style="">#}
+
+
 										</div>
                                         <p>{{ comment.message }}</p>
-                                    {% if comment.user == request.user %}<a href="{% url 'commentdelete' comment.pk %}" class="small"><span class="badge badge-primary">Delete Comment</span></a>
+                  {% if comment.user == request.user %}<a href="{% url 'commentdelete' comment.pk %}" class="small"><span class="badge badge-primary">Delete Comment</span></a>
                                     <a href="{% url 'comment-edit' comment.pk %}" class="small"><span class="badge badge-primary">Edit Comment</span></a>{% endif %}
 {#                                     <div class="replybutton" style="">#}
+{#                                    <div class="replybutton" style="">#}
+{#                                        <span class="text-right small"> Reply</span>#}
+{#                                    </div>#}
+
 {#            <span class="text-right small"> Reply</span>#}
 {#        </div>#}
+
+
+
+
+
+
 {##}
 {#    <div class="row replybox" style="display: none">#}
 {#        <div class="col-sm-12 ml-5 pl-5">#}
            {% if user.is_authenticated %}
+    <div class="row replybox" style="">
+        <div class="col-sm-12 ml-5 pl-5">
             <form method='POST'>
                 {% csrf_token %}
                 <input type="hidden" name='whichcomment' id='id_whichcomment' value="{{comment.id}}">
-                <input class="" type="text" name='message' maxlength="250" id="id_message" placeholder="Reply. . . ">
+                <input class="" type="text" name='message' maxlength="250" id="id_message" placeholder="Reply. . . " required>
                 <button style="padding:1%;" class="btn" type="submit">submit</button>
-            </form>{% endif %}
-{#        </div>#}
-{#    </div>#}
+            </form>
+        </div>
+    </div>
+           {% endif %}
+
 
 										<!-- comment -->{% for r in replycom %}
                                         {% if r.approved == True %}
@@ -179,34 +224,7 @@
 							</div>
 						</div>
 						<!-- /comments -->
-						<!-- reply -->{% if user.is_authenticated %}
-						<div class="section-row">
-							<div class="section-title">
-								<h2>Leave a comment</h2>
-
-							</div>
-
-					<form method="POST">
-{% csrf_token %}
-{% for field in form1.visible_fields %}
-
-    <div class="form-group">
-      {{ field.label_tag }}
-      {% render_field field class="form-control" %}
-    </div>
-{% endfor %}
-
-<button type="submit" class="btn btn-warning">Add Comment</button>
-
-</form>
-
-						</div>
-                        {% else %}
-                        	<div class="section-title">
-                             <h2><a href="{% url 'login' %}">Login</a> to leave a comment</h2>
-							</div>
-
-						<!-- /reply -->{% endif %}
+						<!-- reply -->
 					</div>
 					<!-- /Post content -->
 
@@ -215,7 +233,7 @@
 						<!-- ad -->
 						<div class="aside-widget text-center">
 							<a href="#" style="display: inline-block;margin: auto;">
-								<img class="img-responsive" src="./img/ad-1.jpg" alt="">
+								<img class="img-responsive" src="{% static 'blog/img/ad-1.jpg' %}" alt="">
 							</a>
 						</div>
 						<!-- /ad -->
@@ -227,28 +245,28 @@
 							</div>
 
 							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-1.jpg" alt=""></a>
+								<a class="post-img" href="blog-post.html"><img src="{% static 'blog/img/widget-1.jpg' %}" alt=""></a>
 								<div class="post-body">
 									<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
 								</div>
 							</div>
 
 							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-2.jpg" alt=""></a>
+								<a class="post-img" href="blog-post.html"><img src="{% static 'blog/img/widget-2.jpg' %}" alt=""></a>
 								<div class="post-body">
 									<h3 class="post-title"><a href="blog-post.html">Pagedraw UI Builder Turns Your Website Design Mockup Into Code Automatically</a></h3>
 								</div>
 							</div>
 
 							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-3.jpg" alt=""></a>
+								<a class="post-img" href="blog-post.html"><img src="{% static 'blog/img/widget-3.jpg' %}" alt=""></a>
 								<div class="post-body">
 									<h3 class="post-title"><a href="blog-post.html">Why Node.js Is The Coolest Kid On The Backend Development Block!</a></h3>
 								</div>
 							</div>
 
 							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-4.jpg" alt=""></a>
+								<a class="post-img" href="blog-post.html"><img src="{% static 'blog/img/widget-4.jpg' %}" alt=""></a>
 								<div class="post-body">
 									<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
 								</div>
@@ -262,7 +280,7 @@
 								<h2>Featured Posts</h2>
 							</div>
 							<div class="post post-thumb">
-								<a class="post-img" href="blog-post.html"><img src="./img/post-2.jpg" alt=""></a>
+								<a class="post-img" href="blog-post.html"><img src="{% static 'blog/img/post-2.jpg' %}" alt=""></a>
 								<div class="post-body">
 									<div class="post-meta">
 										<a class="post-category cat-3" href="#">Jquery</a>
@@ -273,7 +291,7 @@
 							</div>
 
 							<div class="post post-thumb">
-								<a class="post-img" href="blog-post.html"><img src="./img/post-1.jpg" alt=""></a>
+								<a class="post-img" href="blog-post.html"><img src="{% static 'blog/img/post-1.jpg' %}" alt=""></a>
 								<div class="post-body">
 									<div class="post-meta">
 										<a class="post-category cat-2" href="#">JavaScript</a>
@@ -292,10 +310,10 @@
 							</div>
 							<div class="category-widget">
 								<ul>
-									<li><a href="#" class="cat-1">Web Design<span>340</span></a></li>
-									<li><a href="#" class="cat-2">JavaScript<span>74</span></a></li>
-									<li><a href="#" class="cat-4">JQuery<span>41</span></a></li>
-									<li><a href="#" class="cat-3">CSS<span>35</span></a></li>
+                                    {% for opt in category %}
+
+									<li><a href="{% url 'category-list' opt.slug %}" class="cat-{{ opt.id }}">{{ opt.name }}<span>{{ opt.post_set.count}}</span></a></li>
+                                    {% endfor %}
 								</ul>
 							</div>
 						</div>
@@ -342,12 +360,33 @@
 		</div>
 		<!-- /section -->
 
-    <script>
+<script>
+
+
+        $(document).ready(function(){
+            $('img').each(function(){
+              var src = $(this).attr('src');;
+              $(this).attr('src', src.replace('post_images_i','post_images_{{data1.id}}'));
+            });
+          });
+
 
         $('.replybutton').click( function(){
             $(this).next('.replybox').toggle();
             console.log('triggered');
 
         });
-    </script>
+
+
+</script>
+{#                                        <script>#}
+{#function myFunction({{ comment.id }}) {#}
+{#  var x = document.getElementById("myDIV"+ {{ comment.id }});#}
+{#  if (x.style.display === "none") {#}
+{#    x.style.display = "block";#}
+{#  } else {#}
+{#    x.style.display = "none";#}
+{#  }#}
+{#}#}
+{#</script>#}
 {% endblock content %}

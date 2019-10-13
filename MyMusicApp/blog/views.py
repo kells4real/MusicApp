@@ -15,7 +15,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
 
-
 def home(request):
     context = {
         'posts': Post.objects.all()
@@ -56,61 +55,61 @@ class UserPostListView(ListView):
 #     model = Post
 
 def post_detail(request, slug):
-    objects = Post.objects.get(slug=slug)
-    posts = Post.objects.all().order_by('-date_posted')
-    side_posts = posts[:3]
-    com = Comment.objects.filter(blog=objects)
-    com_count = com.all()
-    replycom = CommentReply.objects.filter(blog=objects)
+    objects = Post.objects.get(slug=slug)  # Get a specific post based on slug field
+    posts = Post.objects.all().order_by('-date_posted') # All Posts
+    side_posts = posts[:3] # Posts limited to 3
+    com = Comment.objects.filter(blog=objects) # Get comments based on a specific post
+    com_count = com.all() # All Comments for the specific Post.. If I was going to
+    # place the number of comments in the for loop that loops over all comments,
+    # it would have been easy as just {% for comment in com %} {{ comment.message.count }}
+    replycom = CommentReply.objects.filter(blog=objects) # comment reply related to a specific Post
     reply_count = replycom.all()
-    replycom2 = CommentReply.objects.filter(blog=objects)
+    # replycom2 = CommentReply.objects.filter(blog=objects)
     form1 = CommentForm
     form2 = CommentReplyForm
-    search_list = ["suck", "fuck", "Shit", "pussy", "fucked", "fucking",
-                   "Mother Fucker", "mother fucker", "fuck you",
-                   "FUCK YOU", "fucked", "shit", "asshole", "ass hole", "nigga",
-                   "niggro"]
+    category = Hashtag.objects.all()
 
-    for mess in com_count:
+
+
+    search_list = ["fuck", "shit", "fucked", "fucking",
+                   "mother fucker", "mother fucker", "fuck you",
+                    "fucked", "shit", "asshole", "ass hole", "nigga",
+                   "niggro", "ass"] # List of words that should not be used whe n making a comment.
+
+    for mess in com_count: # Checks for foul words in comments and deletes any comment found wanting..
         if any(c in mess.message.casefold() for c in search_list):
             mess.delete()
             messages.success(request, f'Your comment was deleted because it contained fowl words or language..')
 
-    for mess in reply_count:
+    for mess in reply_count: # Checks for foul words in comments reply and deletes any comment found wanting..
         if any(c in mess.message.casefold() for c in search_list):
             mess.delete()
             messages.success(request, f'Your comment was deleted because it contained fowl words or language..')
 
 
-    count = 0
-    count2 = 0
-    for num in com_count:
-        if num.approved:
-            count = count + 1
-
-
-    for num in reply_count:
-        if num.approved:
-            count2 = count2 + 1
+    count = 0 # set count initially to 0
+    for num in com_count: # iterate over com_count
+        if num.approved: # if item in com_count is approved
+            count = count + 1 # add 1 to count to get how many comments a post has
 
     context = {
         'objects': objects,
         'side_posts': side_posts,
         'com': com,
         'replycom': replycom,
-        'replycom2': replycom2,
         'form1': form1,
         'form2': form2,
         'count': count,
-        'count2': count2,
-        'url': "post-detail"
+        'url': "post-detail",
+        'category': category,
+
     }
     if request.method == 'POST':
 
         if request.POST.get('whichcomment'):
-            data3 = CommentReplyForm(request.POST)
+            data3 = CommentReplyForm(request.POST) # Assigned CommentReplyForm to data3
 
-            if data3.is_valid():
+            if data3.is_valid(): # if form is valid
                 whichcomment = int(request.POST.get('whichcomment'))
                 message = data3.cleaned_data['message']
                 #                user = User.objects.get(username=request.user.username)
@@ -220,7 +219,7 @@ def about(request):
 
 class CommentReplyDelete(DeleteView):
     model = CommentReply
-    template_name = 'blog/blogdelete.html'
+    template_name = 'blog/comment_delete.html'
 
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'slug': self.object.whichcomment.blog.slug})
@@ -228,7 +227,7 @@ class CommentReplyDelete(DeleteView):
 
 class CommentDelete(DeleteView):
     model = Comment
-    template_name = 'blog/blogdelete.html'
+    template_name = 'blog/comment_delete.html'
 
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'slug': self.object.blog.slug})

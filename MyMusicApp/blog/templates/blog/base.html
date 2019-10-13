@@ -47,7 +47,7 @@
 
 						<!-- nav -->
 						<ul class="nav-menu nav navbar-nav">
-                        {% if user.is_athenticated %}
+                        {% if user.is_authenticated %}
                             <li><a href="{% url 'logout' %}">Logout</a></li>
                         {% else %}
 							<li><a href="{% url 'login' %}">Login</a></li>

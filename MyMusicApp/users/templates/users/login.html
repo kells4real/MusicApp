@@ -5,6 +5,14 @@
 
  </header>
 
+    {% if user.is_authenticated %}
+    <div class="content-section" id="login">
+    <h3>The user {{ user.username }} is already logged in.</h3>
+        <h4><a href="{% url 'logout' %}">Log Out?</a> or <a href="{% url 'blog-home' %}">Back to Blog Home</a> </h4>
+    </div>
+    {% else %}
+
+
     <div class="content-section" id="login">
 {#                                        <div>#}
 {#            <ul class="messages">#}
@@ -33,5 +41,5 @@
         </form>
 
     </div>
-
+{% endif %}
 {% endblock content %}

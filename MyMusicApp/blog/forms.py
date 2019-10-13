@@ -4,7 +4,6 @@ from PIL import Image
 from django import forms
 from django.core.files.images import get_image_dimensions
 from django.core.files import File
-from simple_search import search_form_factory
 
 
 class PostForm(ModelForm):
