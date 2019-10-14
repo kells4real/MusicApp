@@ -28,7 +28,7 @@
 					<div class="row">
 						<div class="col-md-10">
 							<div class="post-meta">
-								<a class="post-category cat-2" href="{% url 'category-list' objects.category.slug %}">{{ objects.category }}</a>
+								<a class="post-category cat-{{ objects.category.id }}" href="{% url 'category-list' objects.category.slug %}">{{ objects.category }}</a>
 								<span class="post-date">{{ objects.date_posted }}</span>
 							</div>
 							<h1>{{ objects.title }}</h1>
@@ -55,6 +55,9 @@
                                 {% if objects.image_2 %}
                                 <img class="img-responsive" src="{{ objects.image_2.url }}" alt="">
                                 {% endif %}
+                            {% if objects.image_2 %}
+                            <br>
+                            {% endif %}
 								<p>{{ objects.content }}</p>
                             <br>
                             <!-- AddToAny BEGIN -->
@@ -109,10 +112,17 @@
 										</ul>
                                         {% if user == objects.author %}
                                             <br>
-                                        <ul style="">
-                                        <li><a href="{% url 'post-update' objects.slug %}"><button class="button">Update Post</button></a></li>
-                                        <li><a href="{% url 'post-delete' objects.slug %}"><button class="button">Delete Post</button></a></li>
-                                        </ul>
+{#                                        <ul style="">#}
+{#                                        <li><a href="{% url 'post-update' objects.slug %}"><button class="button">Update Post</button></a></li>#}
+{#                                            <a class="btn btn-outline-secondary" href="{% url 'post-detail' object.slug %}">Cancel</a>#}
+{#                                        <li><a href="{% url 'post-delete' objects.slug %}"><button class="button">Delete Post</button></a></li>#}
+{#                                        </ul>#}
+
+                                            <div class="form-group">
+                                                <a class="btn btn-outline-secondary" href="{% url 'post-update' objects.slug %}"><button>Update Post</button></a>
+                                                <a class="btn btn-outline-secondary" href="{% url 'post-delete' objects.slug %}"><button>Delete Post</button></a>
+                                            </div>
+
                                         {% endif %}
 									</div>
 								</div>
@@ -253,37 +263,18 @@
 						<!-- post widget -->
 						<div class="aside-widget">
 							<div class="section-title">
-								<h2>Most Read</h2>
+								<h2>Related Posts</h2>
 							</div>
-
+                                    {% for post in related_posts %}
+                                        {% if post.title != objects.title %}
 							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="{% static 'blog/img/widget-1.jpg' %}" alt=""></a>
+								<a class="post-img" href="{% url 'post-detail' post.slug %}"><img src="{{ post.image.url }}" alt=""></a>
 								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
+									<h3 class="post-title"><a href="{% url 'post-detail' post.slug %}">{{ post.title }}</a></h3>
 								</div>
-							</div>
+							</div>{% endif %}{% endfor %}
 
-							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="{% static 'blog/img/widget-2.jpg' %}" alt=""></a>
-								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Pagedraw UI Builder Turns Your Website Design Mockup Into Code Automatically</a></h3>
-								</div>
 							</div>
-
-							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="{% static 'blog/img/widget-3.jpg' %}" alt=""></a>
-								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Why Node.js Is The Coolest Kid On The Backend Development Block!</a></h3>
-								</div>
-							</div>
-
-							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="{% static 'blog/img/widget-4.jpg' %}" alt=""></a>
-								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
-								</div>
-							</div>
-						</div>
 						<!-- /post widget -->
 
 						<!-- post widget -->

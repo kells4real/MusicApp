@@ -13,6 +13,7 @@ from django.views.generic import (
 from .models import Post, CommentReply, Comment, UserImage, Hashtag
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 
 def home(request):
@@ -27,7 +28,40 @@ def home(request):
 #     template_name = 'blog/home.html'  # <app>/<model>_<viewtype>.html
 #     context_object_name = 'posts'
 #     ordering = ['-date_posted']
-#     paginate_by = 5
+#     paginate_by =
+
+
+class SearchResultsView(ListView):
+    model = Post
+    template_name = 'blog/search.html'
+    paginate_by = 10
+
+    # def get_queryset(self):
+    #     query = self.request.GET.get('q')
+    #     object_list = Event.objects.filter(
+    #         Q(title__icontains=query) | Q(category__name__icontains=query) |
+    #         Q(state__name__icontains=query) | Q(state__name__icontains=query + "state")
+    #     )
+    #
+    #     return ({"object_list": object_list, "query": query})
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchResultsView, self).get_context_data(**kwargs)
+        query = self.request.GET.get('search')
+        object_list = Post.objects.filter(
+            Q(title__icontains=query) | Q(category__name__icontains=query) |
+            Q(content__icontains=query))
+
+        context.update(
+            {"query": query,
+             "object_list": object_list,
+             }
+        )
+
+        return context
+
+
+
 
 def post_list(request):
     posts = Post.objects.all().order_by('-date_posted')
@@ -69,6 +103,7 @@ def post_detail(request, slug):
     form2 = CommentReplyForm
     category = Hashtag.objects.all()
     com_count2 = com_count.count() # This is only here to show my students how we could do it differently
+    related_posts = objects.category.post_set.all().order_by('-date_posted')[:5]
 
 
 
@@ -98,6 +133,7 @@ def post_detail(request, slug):
         'com_count2': com_count2, # This is only here to show my students how we could do it differently
         'url': "post-detail", # This is to differentiate between messages on post detail page from other pages in the base.html
         'category': category,
+        'related_posts': related_posts,
 
     }
     if request.method == 'POST':
