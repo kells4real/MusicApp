@@ -1,2 +1,4 @@
-# MusicApp
-A Music Streaming Web App.
+# Blog & Music
+A Music Streaming, Blog And Events Website.. 
+
+
