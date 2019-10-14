@@ -68,6 +68,7 @@ def post_detail(request, slug):
     form1 = CommentForm
     form2 = CommentReplyForm
     category = Hashtag.objects.all()
+    com_count2 = com_count.count() # This is only here to show my students how we could do it differently
 
 
 
@@ -87,11 +88,6 @@ def post_detail(request, slug):
             messages.success(request, f'Your comment was deleted because it contained fowl words or language..')
 
 
-    count = 0 # set count initially to 0
-    for num in com_count: # iterate over com_count
-        if num.approved: # if item in com_count is approved
-            count = count + 1 # add 1 to count to get how many comments a post has
-
     context = {
         'objects': objects,
         'side_posts': side_posts,
@@ -99,8 +95,8 @@ def post_detail(request, slug):
         'replycom': replycom,
         'form1': form1,
         'form2': form2,
-        'count': count,
-        'url': "post-detail",
+        'com_count2': com_count2, # This is only here to show my students how we could do it differently
+        'url': "post-detail", # This is to differentiate between messages on post detail page from other pages in the base.html
         'category': category,
 
     }
@@ -170,21 +166,10 @@ class PostCreateView(LoginRequiredMixin, CreateView):
             return HttpResponseRedirect(reverse_lazy('post-detail', args=[post.slug]))
         return render(request, 'blog/post_create.html', {'form': form})
 
-    # model = Post
-    # fields = ['title', 'image', 'date_posted', 'content', 'image_2', 'category']
-    # template_name = "blog/post_create.html"
-    # #
-    # # def form_valid(self, form):
-    # #     form.instance.author = self.request.user
-    # #     return super().form_valid(form)
-    # #
-    # # def get_success_url(self):
-    # #     return reverse_lazy('post-detail', kwargs={'slug': self.object.slug})
-
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'image', 'date_posted', 'content', 'image_2', 'category']
+    fields = ['title', 'image', 'date_posted', 'content', 'image_2', 'category', 'display_comment']
     template_name = "blog/post_update.html"
 
     def form_valid(self, form):
@@ -197,14 +182,14 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
-    # def get_context_data(self, **kwargs):
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'slug': self.object.slug})
 
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    success_url = '/'
+    success_url = '/post/'
+    template_name = 'blog/post_confirm_delete.html'
 
     def test_func(self):
         post = self.get_object()

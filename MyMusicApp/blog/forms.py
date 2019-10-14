@@ -9,7 +9,7 @@ from django.core.files import File
 class PostForm(ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'image', 'date_posted', 'content', 'image_2', 'category']
+        fields = ['title', 'image', 'date_posted', 'content', 'image_2', 'category', 'display_comment']
 
 
 class CommentForm(ModelForm):

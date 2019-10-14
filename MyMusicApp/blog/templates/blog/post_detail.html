@@ -107,12 +107,19 @@
 										{% if objects.author.profile.twitter %}	<li><a href="{{ objects.author.profile.twitter }}" target="_blank"><i class="fa fa-twitter"></i></a></li> {% endif %}
 										{% if objects.author.profile.instagram %}<li><a href="{{ objects.author.profile.instagram }}" target="_blank"><i class="fa fa-instagram"></i></a></li> {% endif %}
 										</ul>
+                                        {% if user == objects.author %}
+                                            <br>
+                                        <ul style="">
+                                        <li><a href="{% url 'post-update' objects.slug %}"><button class="button">Update Post</button></a></li>
+                                        <li><a href="{% url 'post-delete' objects.slug %}"><button class="button">Delete Post</button></a></li>
+                                        </ul>
+                                        {% endif %}
 									</div>
 								</div>
 							</div>
 						</div>
 						<!-- /author -->
-
+                {% if objects.display_comment %}
                     {% if user.is_authenticated %}
 						<div class="section-row">
 							<div class="section-title">
@@ -145,12 +152,12 @@
 						<!-- comments -->
 						<div class="section-row">
 							<div class="section-title">
-								{% if count > 1 %}<h2> {{ count }} Comments</h2> {% elif count == 1 %} <h2> {{ count }} Comment</h2> {% else %} <h2> Be the first to comment.. </h2> {% endif %}
+								{% if objects.comment_set.all.count > 1 %}<h2> {{ objects.comment_set.all.count }} Comments</h2> {% elif objects.comment_set.all.count == 1 %} <h2> {{ objects.comment_set.all.count }} Comment</h2> {% else %} <h2> Be the first to comment.. </h2> {% endif %}
 							</div>
 
 							<div class="post-comments">
 								<!-- comment -->{% for comment in com %}
-                                {% if comment.approved == True %}
+                                {% if comment.approved %}
 								<div class="media">
 									<div class="media-left">
 										<img class="media-object" src="{{ comment.usrimg.myimage.url }}" alt="">
@@ -223,6 +230,11 @@
 
 							</div>
 						</div>
+                                                {% else %}
+                        	<div class="section-title">
+                             <h3>Comments have been disabled for this post..</h3>
+							</div>
+                {% endif %}
 						<!-- /comments -->
 						<!-- reply -->
 					</div>

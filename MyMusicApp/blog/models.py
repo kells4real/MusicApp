@@ -45,6 +45,7 @@ class Post(models.Model):
     image = models.ImageField(upload_to=image_upload, null=True, blank=True, default='default.jpg')
     image_2 = models.ImageField(upload_to=image_upload, null=True, blank=True)
     category = models.ForeignKey(Hashtag, on_delete=models.CASCADE, null=True, blank=True)
+    display_comment = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
