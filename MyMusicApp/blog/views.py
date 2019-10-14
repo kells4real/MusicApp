@@ -242,6 +242,13 @@ class CommentReplyDelete(DeleteView):
     model = CommentReply
     template_name = 'blog/comment_delete.html'
 
+    def test_func(self):  #  This adds an extra layer of security. Though we are already checking this in the template,
+        # there is nothing like too much security checks.
+        comment = self.get_object()
+        if self.request.user == comment.user:
+            return True
+        return False
+
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'slug': self.object.whichcomment.blog.slug})
 
@@ -249,6 +256,12 @@ class CommentReplyDelete(DeleteView):
 class CommentDelete(DeleteView):
     model = Comment
     template_name = 'blog/comment_delete.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        if self.request.user == comment.user:
+            return True
+        return False
 
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'slug': self.object.blog.slug})
@@ -264,10 +277,10 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    
+
     def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.user:
+        comment = self.get_object()
+        if self.request.user == comment.user:
             return True
         return False
 
