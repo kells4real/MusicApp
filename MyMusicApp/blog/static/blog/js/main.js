@@ -88,4 +88,20 @@
 
 	setStickyPos();
 
+
+
+
+	//Comment Section
+	$('.openForm').click(function(e){
+		$('.myForm').hide();
+
+		$(this).parents('.media-body').children('.myForm').fadeIn()
+	})
+
+	$('.closeForm').click(function(e){
+		$('.myForm').hide();
+
+		$(this).parents('.media-body').children('.myForm').fadeOut()
+	})
+
 })(jQuery);

@@ -108,9 +108,11 @@ def post_detail(request, slug):
 
 
     search_list = ["fuck", "shit", "fucked", "fucking",
-                   "mother fucker", "mother fucker", "fuck you",
+                   "mother fucker", "fuckyou", "fuckoff", "fuck-you", "fuck-u", "fuck-off",
                     "fucked", "shit", "asshole", "ass hole", "nigga",
-                   "niggro", "ass"] # List of words that should not be used whe n making a comment.
+                   "niggro", "ass", "ass-hole", "mother-fucker", "mother -fucker", "-fucker", "--fucker"
+                   "---fucker", "-niggaz", "niggas", "niggaz", "bitch", "--bitch", "bitchass",
+                   ] # List of words that should not be used whe n making a comment.
 
     for mess in com_count: # Checks for foul words in comments and deletes any comment found wanting..
         if any(c in mess.message.casefold() for c in search_list):
@@ -120,7 +122,7 @@ def post_detail(request, slug):
     for mess in reply_count: # Checks for foul words in comments reply and deletes any comment found wanting..
         if any(c in mess.message.casefold() for c in search_list):
             mess.delete()
-            messages.success(request, f'Your comment was deleted because it contained fowl words or language..')
+            messages.success(request, f'Your comment reply was deleted because it contained fowl words or language..')
 
 
     context = {
@@ -134,6 +136,7 @@ def post_detail(request, slug):
         'url': "post-detail", # This is to differentiate between messages on post detail page from other pages in the base.html
         'category': category,
         'related_posts': related_posts,
+        'reply_count': reply_count
 
     }
     if request.method == 'POST':
